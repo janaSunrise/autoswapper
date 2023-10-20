@@ -46,7 +46,7 @@ export const getProtocolQuote = async ({
   toChainId
 }: GetQuoteParams) => {
   const args = {
-    amount: parseUnits(amount, 18).toString(),
+    amount: parseUnits(amount, 6).toString(),
     user_address: fromAddress,
     src_token_address: fromToken,
     receiver_address: toAddress,
