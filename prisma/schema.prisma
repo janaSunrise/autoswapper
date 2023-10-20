@@ -13,17 +13,23 @@ enum PreferredChain {
   GOERLI
 }
 
+enum Token {
+  NATIVE
+  USDC
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  discordId  String         @unique
+  discordId      String         @unique
+  preferredToken Token
   preferredChain PreferredChain
   privateKey     String
 
-  fromTransfers  Transfer[]     @relation("FromUser")
-  toTransfers    Transfer[]     @relation("ToUser")
+  fromTransfers Transfer[] @relation("FromUser")
+  toTransfers   Transfer[] @relation("ToUser")
 }
 
 model Transfer {
@@ -31,11 +37,11 @@ model Transfer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fromUserId  Int
-  toUserId    Int
-  fromUser    User   @relation("FromUser", fields: [fromUserId], references: [id])
-  toUser      User   @relation("ToUser", fields: [toUserId], references: [id])
+  fromUserId Int
+  toUserId   Int
+  fromUser   User @relation("FromUser", fields: [fromUserId], references: [id])
+  toUser     User @relation("ToUser", fields: [toUserId], references: [id])
 
-  txHash       String
-  amountInUSD  String
+  txHash      String
+  amountInUSD String
 }
