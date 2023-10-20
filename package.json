@@ -12,7 +12,8 @@
     "start": "node build/main.js",
     "watch": "nodemon --exec ts-node-esm src/main.ts",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "prisma migrate dev",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@discordx/importer": "^1.2.3",

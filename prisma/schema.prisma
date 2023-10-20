@@ -18,10 +18,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  discordUserId  String         @unique
-  username       String         @unique
+  discordId  String         @unique
   preferredChain PreferredChain
   privateKey     String
+
   fromTransfers  Transfer[]     @relation("FromUser")
   toTransfers    Transfer[]     @relation("ToUser")
 }
@@ -35,6 +35,7 @@ model Transfer {
   toUserId    Int
   fromUser    User   @relation("FromUser", fields: [fromUserId], references: [id])
   toUser      User   @relation("ToUser", fields: [toUserId], references: [id])
-  txSig       String
-  amountInUSD String
+
+  txHash       String
+  amountInUSD  String
 }
