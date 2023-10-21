@@ -36,9 +36,9 @@ export class Transfer {
       description: 'Amount of the token you want to transfer',
       name: 'amount',
       required: true,
-      type: ApplicationCommandOptionType.Number
+      type: ApplicationCommandOptionType.String
     })
-    amount: number,
+    amount: string,
     interaction: CommandInteraction
   ) {
     const user = await prisma.user.findUnique({
