@@ -4,7 +4,11 @@ import {
   User
 } from 'discord.js';
 import { Discord, Slash, SlashChoice, SlashOption } from 'discordx';
-import { checkAndSetAllowance, getProtocolQuote, initializeRouterProtocol } from '../lib/protocol';
+import {
+  checkAndSetAllowance,
+  getProtocolQuote,
+  initializeRouterProtocol
+} from '../lib/protocol';
 import prisma from '../lib/prisma';
 import { ethers, JsonRpcProvider } from 'ethers';
 import * as chains from 'viem/chains';
@@ -86,10 +90,10 @@ export class Transfer {
         rpc_map[user.preferredChain].id
       )
     );
-      const receiverWalletAddress = new ethers.Wallet(receiverUser.privateKey)
+    const receiverWalletAddress = new ethers.Wallet(receiverUser.privateKey)
       .address;
 
-    const {quote, args} = await getProtocolQuote({
+    const { quote, args } = await getProtocolQuote({
       protocol,
       amount,
       fromAddress: userWallet.address,
@@ -108,11 +112,10 @@ export class Transfer {
 
     let tx;
     try {
-      tx = await protocol.swap(quote, userWallet as any)
-      console.log(`Transaction successfully completed. Tx hash: ${tx.hash}`)
-    }
-    catch (e) {
-      console.log(`Transaction failed with error ${e}`)
+      tx = await protocol.swap(quote, userWallet as any);
+      console.log(`Transaction successfully completed. Tx hash: ${tx.hash}`);
+    } catch (e) {
+      console.log(`Transaction failed with error ${e}`);
       await interaction.reply({
         content: `Transaction failed with error ${e}`,
         ephemeral: true
