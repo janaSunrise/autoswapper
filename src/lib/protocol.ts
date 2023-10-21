@@ -28,7 +28,7 @@ export const initializeRouterProtocol = async () => {
 
 interface GetQuoteParams {
   protocol: RouterProtocol;
-  amount: string;
+  amount: number;
   fromAddress: string;
   fromToken: string;
   toAddress: string;

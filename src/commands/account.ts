@@ -1,6 +1,7 @@
 import { CommandInteraction } from 'discord.js';
 import { Discord, Slash } from 'discordx';
 import prisma from '../lib/prisma';
+import { Wallet, ethers } from 'ethers';
 
 @Discord()
 export class Account {
@@ -23,5 +24,12 @@ export class Account {
       });
       return;
     }
+
+    const walletAddress = new Wallet(user.privateKey).address;
+
+    return await interaction.reply({
+      content: `Your wallet address is ${walletAddress}`,
+      ephemeral: true
+    });
   }
 }
