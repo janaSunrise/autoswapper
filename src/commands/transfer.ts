@@ -6,7 +6,8 @@ import {
 import { Discord, Slash, SlashChoice, SlashOption } from 'discordx';
 import { checkAndSetAllowance, getProtocolQuote, initializeRouterProtocol } from '../lib/protocol';
 import prisma from '../lib/prisma';
-import { ethers } from 'ethers';
+import { ethers, JsonRpcProvider } from 'ethers';
+import * as chains from 'viem/chains';
 
 @Discord()
 export class Transfer {
@@ -72,14 +73,30 @@ export class Transfer {
 
     const { protocol, provider } = await initializeRouterProtocol();
 
-    const userWallet = new ethers.Wallet(user.privateKey);
-    const receiverWalletAddress = new ethers.Wallet(receiverUser.privateKey)
+    const rpc_map = {
+      MUMBAI: chains.polygonMumbai,
+      FUJI: chains.avalancheFuji,
+      GOERLI: chains.goerli
+    };
+
+    const userWallet = new ethers.Wallet(
+      user.privateKey,
+      new JsonRpcProvider(
+        rpc_map[user.preferredChain].rpcUrls.default.http[0],
+        rpc_map[user.preferredChain].id
+      )
+    );
+      const receiverWalletAddress = new ethers.Wallet(receiverUser.privateKey)
       .address;
 
     const {quote, args} = await getProtocolQuote({
+      protocol,
       amount,
       fromAddress: userWallet.address,
-      fromToken: user
+      fromToken: token,
+      toAddress: receiverWalletAddress,
+      toToken: receiverUser.preferredToken,
+      toChainId: receiverUser.preferredChain
     });
 
     await checkAndSetAllowance({
