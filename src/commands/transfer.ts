@@ -123,22 +123,14 @@ export class Transfer {
       return;
     }
 
-    let timer = setInterval(async function () {
-      let status = await protocol.getTransactionStatus(tx.hash)
-      console.log(status)
-
-      if (status.tx_status_code === 1) {
-        console.log("Transaction completed")
-
-        // Insert into DB
-
-        //
-        clearInterval(timer);
+    await prisma.transfer.create({
+      data: {
+        fromUserId: user.id,
+        toUserId: receiverUser.id,
+        txHash: tx.hash,
+        amountInUSD: '100'
       }
-      else {
-        console.log("Transaction pending")
-      }
-    }, 500);
+    });
 
     await interaction.reply({
       content: `Transaction successfully completed. Tx hash: ${tx.hash}`,
