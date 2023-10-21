@@ -4,7 +4,7 @@ import {
   User
 } from 'discord.js';
 import { Discord, Slash, SlashChoice, SlashOption } from 'discordx';
-import { getProtocolQuote, initializeRouterProtocol } from '../lib/protocol';
+import { checkAndSetAllowance, getProtocolQuote, initializeRouterProtocol } from '../lib/protocol';
 import prisma from '../lib/prisma';
 import { ethers } from 'ethers';
 
@@ -70,16 +70,36 @@ export class Transfer {
       return;
     }
 
+    const { protocol, provider } = await initializeRouterProtocol();
+
     const userWallet = new ethers.Wallet(user.privateKey);
     const receiverWalletAddress = new ethers.Wallet(receiverUser.privateKey)
       .address;
 
-    const { protocol, provider } = await initializeRouterProtocol();
-
-    await getProtocolQuote({
+    const {quote, args} = await getProtocolQuote({
       amount,
       fromAddress: userWallet.address,
       fromToken: user
     });
+
+    await checkAndSetAllowance({
+      provider,
+      protocol,
+      args,
+      privateKey: user.privateKey
+    });
+
+    let tx;
+    try {
+      tx = await protocol.swap(quote, userWallet as any)
+      console.log(`Transaction successfully completed. Tx hash: ${tx.hash}`)
+    }
+    catch (e) {
+      console.log(`Transaction failed with error ${e}`)
+      await interaction.reply({
+        content: `Transaction failed with error ${e}`,
+        ephemeral: true
+      });
+    }
   }
 }
