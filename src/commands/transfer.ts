@@ -120,6 +120,29 @@ export class Transfer {
         content: `Transaction failed with error ${e}`,
         ephemeral: true
       });
+      return;
     }
+
+    let timer = setInterval(async function () {
+      let status = await protocol.getTransactionStatus(tx.hash)
+      console.log(status)
+
+      if (status.tx_status_code === 1) {
+        console.log("Transaction completed")
+
+        // Insert into DB
+
+        //
+        clearInterval(timer);
+      }
+      else {
+        console.log("Transaction pending")
+      }
+    }, 500);
+
+    await interaction.reply({
+      content: `Transaction successfully completed. Tx hash: ${tx.hash}`,
+      ephemeral: true
+    });
   }
 }
